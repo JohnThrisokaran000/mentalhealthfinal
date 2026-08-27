@@ -5,6 +5,7 @@ import {
   LayoutDashboard, BookHeart, Mic, MessageCircleHeart, History,
   BookOpen, LifeBuoy, UserRound, LogOut, Menu, ShieldCheck,
   Sun, Moon, ChevronRight, AlertTriangle,
+  Languages,
 } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,8 @@ import { cn } from "@/lib/utils";
 import { ROLE_LABELS } from "@/lib/constants";
 import type { View } from "@/lib/store";
 import { LevelDot } from "@/components/shared/level-pill";
+import { FloatingAIChat } from "@/components/shared/floating-ai-chat";
+import { BackButton } from "@/components/shared/back-button";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, BookHeart, Mic, MessageCircleHeart, History,
@@ -33,7 +36,7 @@ function useNavItems() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { user, view, navigate, theme, toggleTheme, mobileNavOpen, setMobileNavOpen } = useApp();
+  const { user, view, navigate, theme, toggleTheme, mobileNavOpen, setMobileNavOpen, language, setLanguage } = useApp();
   const navItems = useNavItems();
   const [emergencyOpen, setEmergencyOpen] = useState(false);
 
@@ -99,6 +102,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Top bar */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6">
           <div className="flex items-center gap-3">
+            <BackButton fallback="dashboard" />
             <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
@@ -112,6 +116,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="lg:hidden"><Logo /></div>
           </div>
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === "en" ? "hi" : "en")} aria-label="Toggle script">
+              <Languages className="mr-1.5 h-4 w-4" /> {language === "en" ? "हिंदी" : "English"}
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("support")} className="text-destructive">
               <AlertTriangle className="mr-1.5 h-4 w-4" /> Need help?
             </Button>
@@ -122,6 +129,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="min-h-0 flex-1">{children}</main>
+        {user?.role === "USER" && <FloatingAIChat />}
       </div>
     </div>
   );

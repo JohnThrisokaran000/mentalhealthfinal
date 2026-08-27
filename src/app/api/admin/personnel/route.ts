@@ -18,7 +18,7 @@ async function _GET(req: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
   const pageSize = Math.min(50, Math.max(1, parseInt(searchParams.get("pageSize") || "12", 10)));
 
-  const where: any = { role: "USER" };
+  const where: any = { role: "USER", NOT: { id: user.id } };
   if (q) where.OR = [
     { name: { contains: q } },
     { serviceNumber: { contains: q } },

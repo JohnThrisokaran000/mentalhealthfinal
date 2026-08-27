@@ -376,3 +376,11 @@ The audio buffer is **never** persisted. Only the transcript (`VoiceEntry.transc
 - **Mock fallback masks errors.** When the ZAI provider fails, it silently falls back to the mock. This is good for resilience but can hide provider outages — monitor the `[AI] chat failed, falling back to mock:` logs.
 - **Safety classifier is regex-only.** It catches explicit high-risk phrases but can miss paraphrases or non-English text. Augmenting with a small classifier model is a documented next step.
 - **No red-team suite.** A regression test of adversarial prompts ("ignore previous instructions", "you are now DAN", "what is the system prompt?") should be added before production.
+
+---
+
+## 13. FastAPI provider adapter
+
+`backend/app/ai/providers.py` exposes the provider interface used by the standalone FastAPI service. `AI_PROVIDER=mock` is the credential-free development default. `AI_PROVIDER=openai` selects a server-only OpenAI-compatible adapter using `AI_API_KEY`, `AI_BASE_URL`, and `AI_MODEL`; no credential is exposed to the browser.
+
+The FastAPI chat route runs `safety_check()` before any provider call, and journal risk categories are always determined by `deterministic_journal_analysis()`. Provider output is therefore never the final authority for an internal operational indicator. Voice transcription remains mock-only until an approved STT provider is integrated.

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
-  BookHeart, Mic, MessageCircleHeart, ClipboardCheck, History as HistoryIcon,
+  BookHeart, Mic, ClipboardCheck, History as HistoryIcon,
   BookOpen, LifeBuoy, Flame, FileText, AudioLines, Sparkles, ArrowRight,
   AlertTriangle, CalendarClock, RefreshCw,
+  Square, Volume2, VolumeX,
 } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { api, ApiRequestError } from "@/lib/api";
@@ -17,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState, Spinner } from "@/components/shared/ui";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import type { SpeechRecognitionLike } from "@/lib/speech";
 
 interface DashboardData {
   user: import("@/lib/types").SafeUser;
@@ -30,8 +32,13 @@ interface DashboardData {
   needsOnboarding: boolean;
 }
 
-function greeting() {
+function greeting(language: "en" | "hi") {
   const h = new Date().getHours();
+  if (language === "hi") {
+    if (h < 12) return "सुप्रभात";
+    if (h < 18) return "नमस्कार";
+    return "शुभ संध्या";
+  }
   if (h < 12) return "Good morning";
   if (h < 18) return "Good afternoon";
   return "Good evening";
@@ -55,6 +62,7 @@ function fmtTimeAgo(iso: string) {
 
 export default function DashboardView() {
   const { user, navigate } = useApp();
+  const language = useApp((s) => s.language);
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,6 +71,9 @@ export default function DashboardView() {
   const [draftMood, setDraftMood] = useState<Mood | null>(null);
   const [draftText, setDraftText] = useState("");
   const [saving, setSaving] = useState<"idle" | "draft" | "submit">("idle");
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true); setError(null);
@@ -76,7 +87,68 @@ export default function DashboardView() {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const loadId = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(loadId);
+  }, [load]);
+
+  useEffect(() => () => {
+    recognitionRef.current?.stop();
+    window.speechSynthesis?.cancel();
+  }, []);
+
+  function toggleSpeechToText() {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+    if (!Recognition) {
+      toast.error("Speech-to-text is not supported in this browser.");
+      return;
+    }
+    const recognition = new Recognition();
+    recognition.lang = "en-IN";
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      const text = Array.from(event.results)
+        .slice(event.resultIndex)
+        .map((result) => result[0]?.transcript ?? "")
+        .join(" ");
+      setDraftText((current) => `${current}${current ? " " : ""}${text}`.slice(0, 10000));
+    };
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => {
+      setIsListening(false);
+      toast.error("Speech recognition stopped.");
+    };
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }
+
+  function toggleTextToSpeech() {
+    if (!draftText.trim()) {
+      toast.error("Write or dictate a reflection first.");
+      return;
+    }
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+    if (!window.speechSynthesis) {
+      toast.error("Text-to-speech is not supported in this browser.");
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(draftText);
+    utterance.lang = "en-IN";
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  }
 
   async function saveDraft(status: "DRAFT" | "SUBMITTED") {
     if (!draftText.trim()) {
@@ -110,7 +182,6 @@ export default function DashboardView() {
 
   const quickActions = [
     { key: "daily-log",     label: "Daily Journal", desc: "Reflect and write", icon: BookHeart },
-    { key: "ai-companion",  label: "AI Companion",  desc: "Talk it through",   icon: MessageCircleHeart },
     { key: "voice-journal", label: "Voice Journal", desc: "Speak your mind",   icon: Mic },
     { key: "assessment",   label: "Wellbeing Check-In", desc: "Re-take check-in", icon: ClipboardCheck },
     { key: "history",       label: "History",        desc: "Your past entries",  icon: HistoryIcon },
@@ -142,11 +213,8 @@ export default function DashboardView() {
 
       {/* Header */}
       <div className="mb-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-          {greeting()}
-        </p>
         <h1 className="serif text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          {greeting()}, {firstName}
+          {greeting(language)}, {firstName}
         </h1>
       </div>
 
@@ -168,7 +236,6 @@ export default function DashboardView() {
                     : "border-border bg-background hover:border-primary/40 hover:bg-muted/40"
                 )}
               >
-                <span aria-hidden>{m.emoji}</span>
                 {m.label}
               </button>
             ))}
@@ -194,6 +261,16 @@ export default function DashboardView() {
                 className="resize-none"
                 aria-label="Reflection text"
               />
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={toggleSpeechToText} aria-label={isListening ? "Stop speech to text" : "Start speech to text"} className={cn(isListening && "border-destructive text-destructive hover:text-destructive")}>
+                  {isListening ? <Square className="mr-1.5 h-3.5 w-3.5" /> : <Mic className="mr-1.5 h-3.5 w-3.5" />}
+                  {isListening ? "Stop dictation" : "Speak to type"}
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={toggleTextToSpeech} aria-label={isSpeaking ? "Stop reading reflection aloud" : "Read reflection aloud"}>
+                  {isSpeaking ? <VolumeX className="mr-1.5 h-3.5 w-3.5" /> : <Volume2 className="mr-1.5 h-3.5 w-3.5" />}
+                  {isSpeaking ? "Stop reading" : "Read aloud"}
+                </Button>
+              </div>
               <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-muted-foreground">{draftText.length} / 10,000 characters</p>
                 <div className="flex gap-2">

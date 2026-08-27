@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BookHeart, Save, Send, Pencil, Trash2, Inbox, AlertTriangle,
-  RefreshCw, LockKeyhole, FileText,
+  RefreshCw, LockKeyhole, FileText, Mic, Square, Volume2, VolumeX,
 } from "lucide-react";
 import { api, ApiRequestError } from "@/lib/api";
 import { MOODS } from "@/lib/constants";
@@ -23,6 +23,7 @@ import {
 import { EmptyState, Spinner } from "@/components/shared/ui";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import type { SpeechRecognitionLike } from "@/lib/speech";
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
@@ -40,6 +41,9 @@ export default function DailyLogView() {
   const [draftMood, setDraftMood] = useState<Mood | null>(null);
   const [draftText, setDraftText] = useState("");
   const [saving, setSaving] = useState<"idle" | "draft" | "submit">("idle");
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   // Edit dialog
   const [editing, setEditing] = useState<JournalDTO | null>(null);
@@ -63,7 +67,68 @@ export default function DailyLogView() {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const loadId = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(loadId);
+  }, [load]);
+
+  useEffect(() => () => {
+    recognitionRef.current?.stop();
+    window.speechSynthesis?.cancel();
+  }, []);
+
+  function toggleSpeechToText() {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error("Speech-to-text is not supported in this browser.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .slice(event.resultIndex)
+        .map((result) => result[0]?.transcript ?? "")
+        .join(" ");
+      setDraftText((current) => `${current}${current ? " " : ""}${transcript}`.slice(0, 10000));
+    };
+    recognition.onerror = () => {
+      setIsListening(false);
+      toast.error("Speech recognition stopped. You can continue typing.");
+    };
+    recognition.onend = () => setIsListening(false);
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }
+
+  function toggleTextToSpeech() {
+    if (!draftText.trim()) {
+      toast.error("Write or dictate a reflection first.");
+      return;
+    }
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+    if (!window.speechSynthesis) {
+      toast.error("Text-to-speech is not supported in this browser.");
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(draftText);
+    utterance.lang = "en-IN";
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  }
 
   async function create(status: "DRAFT" | "SUBMITTED") {
     if (!draftText.trim()) { toast.error("Write a short reflection first."); return; }
@@ -148,6 +213,29 @@ export default function DailyLogView() {
                 className="resize-none"
                 aria-label="Reflection text"
               />
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleSpeechToText}
+                  aria-label={isListening ? "Stop speech to text" : "Start speech to text"}
+                  className={cn(isListening && "border-destructive text-destructive hover:text-destructive")}
+                >
+                  {isListening ? <Square className="mr-1.5 h-3.5 w-3.5" /> : <Mic className="mr-1.5 h-3.5 w-3.5" />}
+                  {isListening ? "Stop dictation" : "Speak to type"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleTextToSpeech}
+                  aria-label={isSpeaking ? "Stop reading reflection aloud" : "Read reflection aloud"}
+                >
+                  {isSpeaking ? <VolumeX className="mr-1.5 h-3.5 w-3.5" /> : <Volume2 className="mr-1.5 h-3.5 w-3.5" />}
+                  {isSpeaking ? "Stop reading" : "Read aloud"}
+                </Button>
+              </div>
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">{draftText.length} / 10,000</span>
                 <div className="flex gap-2">

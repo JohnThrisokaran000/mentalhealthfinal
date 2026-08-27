@@ -19,6 +19,7 @@ const schema = z.object({
 // when it's safe to continue a normal supportive conversation.
 async function _POST(req: NextRequest) {
   const { user } = await requireAuth();
+  if (user.role !== "USER") return jsonError("AI companion chat is available to CRPF personnel only.", 403, "USER_ONLY");
   let body: unknown;
   try { body = await req.json(); } catch { return jsonError("Invalid JSON", 400); }
   const parsed = schema.safeParse(body);

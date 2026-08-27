@@ -20,6 +20,7 @@ import { EmptyState } from "@/components/shared/ui";
 import { LevelDot } from "@/components/shared/level-pill";
 import { LEVEL_META } from "@/lib/constants";
 import type { PersonnelRowDTO, WellbeingLevel } from "@/lib/types";
+import { translate } from "@/lib/i18n";
 import {
   AdminPage, ErrorPanel, PermissionNotice, relTime,
 } from "./_shared";
@@ -44,7 +45,7 @@ const STATUS_STYLE: Record<string, string> = {
 };
 
 export default function AdminPersonnelView() {
-  const { navigate, params } = useApp();
+  const { navigate, params, language } = useApp();
 
   const [q, setQ] = useState(params.q ?? "");
   const [unit, setUnit] = useState(params.unit ?? "all");
@@ -98,7 +99,7 @@ export default function AdminPersonnelView() {
   if (forbidden) {
     return (
       <AdminPage>
-        <Header />
+        <Header language={language} />
         <PermissionNotice permission="VIEW_USER_PROFILE" />
       </AdminPage>
     );
@@ -106,7 +107,7 @@ export default function AdminPersonnelView() {
 
   return (
     <AdminPage>
-      <Header />
+      <Header language={language} />
 
       {/* Filters */}
       <Card className="mb-4">
@@ -116,30 +117,30 @@ export default function AdminPersonnelView() {
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search by name, service number, or email…"
+              placeholder={translate("Search by name, service number, or email…", language)}
               className="pl-9"
-              aria-label="Search personnel"
+              aria-label={translate("Search personnel", language)}
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <FilterSelect
               value={unit} onChange={setUnit}
-              placeholder="All units"
+              placeholder={translate("All units", language)}
               items={(data?.units ?? []).map((u) => ({ value: u, label: u }))}
-              ariaLabel="Filter by unit"
+              ariaLabel={translate("Filter by unit", language)}
             />
             <FilterSelect
               value={level} onChange={setLevel}
-              placeholder="All levels"
+              placeholder={translate("All levels", language)}
               items={LEVELS.map((l) => ({ value: l, label: LEVEL_META[l].label }))}
-              ariaLabel="Filter by wellbeing level"
+              ariaLabel={translate("Filter by wellbeing level", language)}
             />
             {(q || unit !== "all" || level !== "all") && (
               <Button
                 variant="ghost" size="sm"
                 onClick={() => { setQ(""); setUnit("all"); setLevel("all"); setPage(1); }}
               >
-                Clear
+                {translate("Clear", language)}
               </Button>
             )}
           </div>
@@ -169,13 +170,13 @@ export default function AdminPersonnelView() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Personnel</TableHead>
-                    <TableHead>Unit</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Wellbeing Indicator</TableHead>
-                    <TableHead>Last Check-in</TableHead>
-                    <TableHead>Last Activity</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{translate("Personnel", language)}</TableHead>
+                    <TableHead>{translate("Unit", language)}</TableHead>
+                    <TableHead>{translate("Status", language)}</TableHead>
+                    <TableHead>{translate("Wellbeing Indicator", language)}</TableHead>
+                    <TableHead>{translate("Last Check-in", language)}</TableHead>
+                    <TableHead>{translate("Last Activity", language)}</TableHead>
+                    <TableHead className="text-right">{translate("Actions", language)}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -210,7 +211,7 @@ export default function AdminPersonnelView() {
                           variant="ghost" size="sm"
                           onClick={() => navigate("admin-person", { id: p.id })}
                         >
-                          View <ChevR className="ml-1 h-3 w-3" />
+                          {translate("View", language)} <ChevR className="ml-1 h-3 w-3" />
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -257,7 +258,7 @@ export default function AdminPersonnelView() {
                     variant="outline" size="sm" className="mt-3 w-full"
                     onClick={() => navigate("admin-person", { id: p.id })}
                   >
-                    View profile
+                    {translate("View profile", language)}
                   </Button>
                 </CardContent>
               </Card>
@@ -308,12 +309,13 @@ function Pagination({
   page: number; pages: number; total: number; pageSize: number;
   onChange: (p: number) => void;
 }) {
+  const language = useApp((s) => s.language);
   const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const to = Math.min(page * pageSize, total);
   return (
     <div className="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
       <p className="text-xs text-muted-foreground tabular-nums">
-        Showing <span className="font-medium text-foreground">{from}</span>–
+        {translate("Showing", language)} <span className="font-medium text-foreground">{from}</span>–
         <span className="font-medium text-foreground">{to}</span> of{" "}
         <span className="font-medium text-foreground">{total.toLocaleString()}</span>
       </p>
@@ -327,7 +329,7 @@ function Pagination({
           <ChevronLeft className="h-4 w-4" /> Prev
         </Button>
         <span className="px-3 text-sm tabular-nums text-muted-foreground">
-          Page {page} of {Math.max(1, pages)}
+          {translate("Page", language)} {page} {translate("of", language)} {Math.max(1, pages)}
         </span>
         <Button
           variant="outline" size="sm"
@@ -361,15 +363,15 @@ function PersonnelSkeleton() {
   );
 }
 
-function Header() {
+function Header({ language }: { language: "en" | "hi" }) {
   return (
     <div className="mb-6 flex flex-col gap-1">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Directory</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{translate("Directory", language)}</p>
       <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-        Personnel
+        {translate("Personnel", language)}
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Search and review operational records. Sensitive clinical content is restricted to authorized roles.
+        {translate("Search and review operational records. Sensitive clinical content is restricted to authorized roles.", language)}
       </p>
     </div>
   );

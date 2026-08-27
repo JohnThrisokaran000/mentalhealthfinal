@@ -1,5 +1,7 @@
 # Security
 
+> The standalone FastAPI service in `backend/` uses Argon2 password hashing, bearer access tokens with rotated refresh sessions, server-side permission dependencies, request security headers, and an Alembic-managed SQLAlchemy schema. Its API-specific controls are documented in [API.md](API.md) and [DEPLOYMENT.md](DEPLOYMENT.md).
+
 > This document is the security model for Sentinel. It covers the threat model, password hashing, session management, RBAC enforcement, audit logging, sensitive-access gating, the AI safety layer, file-upload validation, input validation, rate limiting, and a production hardening checklist.
 
 Every claim below is cross-referenced to the exact file/function in the codebase. The system is **honest about its limitations** — the "next steps" sections call out what is not yet implemented.

@@ -13,6 +13,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useApp } from "@/lib/store";
+import { Logo } from "@/components/shared/logo";
 import { PageHeader, SectionHeading } from "@/components/shared/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,7 @@ const isWhat = [
 ];
 
 const isNotWhat = [
-  "A clinical diagnostic tool. Sentinel does not diagnose mental illness.",
+  "A clinical diagnostic tool. CRPF MHS does not diagnose mental illness.",
   "A replacement for clinicians, chaplains, or your unit wellbeing officer.",
   "An emergency service. In a crisis, contact local emergency services.",
   "Anonymous — your identity is known so we can route support to you.",
@@ -63,7 +64,7 @@ export default function AboutView() {
     <div className="bg-background">
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <PageHeader
-          title="About Sentinel"
+          title="About CRPF MHS"
           description="A confidential, AI-assisted wellbeing and early-support platform — built for the realities of armed forces and uniformed-service life."
         >
           <Button variant="outline" onClick={() => navigate("how-it-works")}>
@@ -85,16 +86,16 @@ export default function AboutView() {
             </CardHeader>
             <CardContent>
               <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Sentinel exists because wellbeing rarely breaks in a single
+                CRPF MHS exists because wellbeing rarely breaks in a single
                 dramatic moment — it wears down gradually, in sleepless nights,
                 quiet disconnection, and small persistent stresses. By giving
                 personnel a private way to check in, reflect, and ask for help,
                 and by giving commanders and clinicians an operational view of
-                trends (never raw content), Sentinel aims to catch problems
+                trends (never raw content), CRPF MHS aims to catch problems
                 earlier — without compromising trust or unit cohesion.
               </p>
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Sentinel is not surveillance. It is a tool for the individual
+                CRPF MHS is not surveillance. It is a tool for the individual
                 first, with carefully scoped, consent-based visibility for
                 those whose duty is to support them.
               </p>
@@ -136,8 +137,8 @@ export default function AboutView() {
         <div className="mt-14">
           <SectionHeading
             eyebrow="Clarity first"
-            title="What Sentinel is — and what it isn't"
-            description="Mental wellbeing tools work best when expectations are honest. Here is where Sentinel stops, so you know exactly what you are using."
+            title="What CRPF MHS is — and what it isn't"
+            description="Mental wellbeing tools work best when expectations are honest. Here is where CRPF MHS stops, so you know exactly what you are using."
           />
 
           <div className="mt-8 grid gap-4 lg:grid-cols-2">
@@ -147,7 +148,7 @@ export default function AboutView() {
                   <CheckCircle2 className="h-5 w-5" />
                 </span>
                 <CardTitle className="text-lg text-emerald-900 dark:text-emerald-200">
-                  Sentinel is
+                  CRPF MHS is
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -168,7 +169,7 @@ export default function AboutView() {
                   <XCircle className="h-5 w-5" />
                 </span>
                 <CardTitle className="text-lg text-rose-900 dark:text-rose-200">
-                  Sentinel is not
+                  CRPF MHS is not
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -215,7 +216,7 @@ export default function AboutView() {
         <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-muted/30 p-6 sm:flex-row sm:items-center sm:p-8">
           <div className="flex items-start gap-3">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <ShieldCheck className="h-5 w-5" />
+              <Logo size={24} />
             </span>
             <div>
               <h3 className="text-base font-semibold text-foreground">

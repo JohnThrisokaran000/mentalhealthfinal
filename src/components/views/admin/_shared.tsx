@@ -27,13 +27,13 @@ export function RiskFootnote({ className = "" }: { className?: string }) {
 // Used for sensitive sections (journals, conversations, assessments, etc).
 export function RestrictedNotice({ permission }: { permission: Permission }) {
   return (
-    <Card className="border-dashed border-amber-300/70 bg-amber-50/40 dark:border-amber-400/30 dark:bg-amber-500/5">
+    <Card className="border-dashed border-[#1d256f]/40 bg-[#1d256f]/5 dark:border-[#1d256f]/60 dark:bg-[#1d256f]/20">
       <CardContent className="flex items-start gap-3 py-5">
-        <div className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
+        <div className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1d256f]/15 text-[#1d256f] dark:bg-[#1d256f]/30 dark:text-blue-200">
           <LockKeyhole className="h-4 w-4" />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
+          <p className="text-sm font-semibold text-[#1d256f] dark:text-blue-200">
             Access restricted
           </p>
           <p className="mt-0.5 text-sm text-muted-foreground">

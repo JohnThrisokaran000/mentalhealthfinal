@@ -63,7 +63,7 @@ export default function ContactView() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <PageHeader
           title="Contact"
-          description="Questions about Sentinel, accessibility, or deploying it in your organization? Send us a message."
+          description="Questions about CRPF MHS, accessibility, or deploying it in your organization? Send us a message."
         />
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">

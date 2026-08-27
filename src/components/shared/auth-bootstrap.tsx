@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useApp } from "@/lib/store";
 import { api } from "@/lib/api";
-import { Spinner } from "@/components/shared/ui";
+import { LoadingScreen } from "@/components/shared/loading-screen";
 
 // Loads the current user on mount and routes appropriately:
 //  - if firstLogin && !onboardingComplete and the user tries to go to the app,
@@ -39,14 +39,7 @@ export function AuthBootstrap({ children }: { children: React.ReactNode }) {
   }, [user, view, navigate]);
 
   if (loadingUser) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-muted-foreground">
-          <Spinner className="h-6 w-6 text-primary" />
-          <p className="text-sm">Loading Sentinel…</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return <>{children}</>;

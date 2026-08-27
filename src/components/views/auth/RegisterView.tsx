@@ -89,7 +89,7 @@ export default function RegisterView() {
   return (
     <AuthShell
       eyebrow="Create your account"
-      title="Join Sentinel"
+      title="Join CRPF MHS"
       description="A confidential space to monitor, reflect on, and support your mental wellbeing."
       footer={
         <p>
@@ -107,7 +107,7 @@ export default function RegisterView() {
       <Alert className="mb-5 border-primary/30 bg-primary/[0.04]">
         <ShieldCheck className="h-4 w-4 text-primary" />
         <AlertDescription className="text-xs text-foreground/80">
-          By creating an account, you consent to Sentinel processing your wellbeing
+          By creating an account, you consent to CRPF MHS processing your wellbeing
           data to provide personalised support. Entries are confidential and access
           is restricted. Read our{" "}
           <button

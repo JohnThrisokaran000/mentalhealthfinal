@@ -168,7 +168,7 @@ export async function recomputeUserRisk(userId: string): Promise<{ score: number
 // Helper to recompute from a journal/voice/ai trigger that should alert.
 export async function triggerRiskFromContent(opts: {
   userId: string;
-  source: "journal" | "voice" | "ai_chat";
+  source: "assessment" | "journal" | "voice" | "ai_chat";
   level: WellbeingLevel;
   confidence: number;
   signals?: string[];

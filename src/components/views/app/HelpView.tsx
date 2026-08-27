@@ -31,19 +31,19 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "How is my wellbeing level calculated?",
-    a: "Sentinel analyzes patterns in your journals, voice notes, and check-ins to produce an internal wellbeing indicator. This indicator is used to ensure timely support — it is never shown to you as a 'score', and only authorized roles can view aggregated indicators for oversight purposes.",
+    a: "CRPF MHS analyzes patterns in your journals, voice notes, and check-ins to produce an internal wellbeing indicator. This indicator is used to ensure timely support — it is never shown to you as a 'score', and only authorized roles can view aggregated indicators for oversight purposes.",
   },
   {
     q: "What should I do in a crisis?",
-    a: "If you or someone else is in immediate danger, contact your local emergency services right away. Sentinel is not an emergency service. The Support page lists confidential 24/7 helplines for armed forces personnel and families.",
+    a: "If you or someone else is in immediate danger, contact your local emergency services right away. CRPF MHS is not an emergency service. The Support page lists confidential 24/7 helplines for armed forces personnel and families.",
   },
   {
-    q: "Can I use Sentinel anonymously?",
-    a: "Sentinel is designed for verified armed-forces personnel, so accounts are tied to your service identity. However, your activity data is private to you, and you can withdraw consent for processing at any time from your Profile.",
+    q: "Can I use CRPF MHS anonymously?",
+    a: "CRPF MHS is designed for verified armed-forces personnel, so accounts are tied to your service identity. However, your activity data is private to you, and you can withdraw consent for processing at any time from your Profile.",
   },
   {
     q: "Does it cost anything?",
-    a: "Sentinel is provided as a wellbeing benefit to eligible armed forces personnel. There is no charge to use the platform.",
+    a: "CRPF MHS is provided as a wellbeing benefit to eligible armed forces personnel. There is no charge to use the platform.",
   },
 ];
 
@@ -56,7 +56,7 @@ const QUICK_LINKS = [
 
 const CONTACTS = [
   { label: "Confidential support line", desc: "24/7 for armed forces personnel", contact: "0800 000 0000", icon: PhoneCall, hours: "24/7" },
-  { label: "Email Sentinel team", desc: "General questions & feedback", contact: "support@sentinel.example", icon: Mail, hours: "Replies within 2 working days" },
+  { label: "Email CRPF MHS team", desc: "General questions & feedback", contact: "support@crpfmhs.example", icon: Mail, hours: "Replies within 2 working days" },
   { label: "Crisis text line", desc: "Text-based support", contact: "Text 'SUPPORT' to 85258", icon: MessageSquare, hours: "24/7" },
 ];
 

@@ -3,9 +3,9 @@
 import { type WellbeingLevel } from "@/lib/types";
 import { LEVEL_META } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Leaf, AlertTriangle, TriangleAlert, OctagonAlert, ShieldAlert } from "lucide-react";
+import { CheckCircle2, Leaf, AlertTriangle, TriangleAlert, OctagonAlert, ShieldAlert, type LucideIcon } from "lucide-react";
 
-const ICONS: Record<WellbeingLevel, React.ComponentType<{ className?: string }>> = {
+const ICONS: Record<WellbeingLevel, LucideIcon> = {
   NORMAL: CheckCircle2,
   LOW: Leaf,
   MODERATE: AlertTriangle,

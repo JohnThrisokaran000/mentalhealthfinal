@@ -32,7 +32,7 @@ const steps = [
   {
     icon: ClipboardCheck,
     title: "First assessment",
-    body: "A short, validated baseline assessment calibrates Sentinel to you. This is not a diagnosis — it gives the platform a starting point against which later patterns make sense.",
+    body: "A short, validated baseline assessment calibrates CRPF MHS to you. This is not a diagnosis — it gives the platform a starting point against which later patterns make sense.",
   },
   {
     icon: HeartPulse,
@@ -52,31 +52,31 @@ const steps = [
   {
     icon: Activity,
     title: "Internal monitoring",
-    body: "Sentinel computes an operational wellbeing indicator from your check-ins, journals, and conversations. This is operational, not diagnostic — it helps the system decide when a discreet, supportive human check-in might help.",
+    body: "CRPF MHS computes an operational wellbeing indicator from your check-ins, journals, and conversations. This is operational, not diagnostic — it helps the system decide when a discreet, supportive human check-in might help.",
   },
   {
     icon: LifeBuoy,
     title: "Human support escalation",
-    body: "When patterns suggest it would help, Sentinel offers — never forces — a path to your unit wellbeing officer, a clinician, or chaplaincy. You always remain in control of when and how you ask for support.",
+    body: "When patterns suggest it would help, CRPF MHS offers — never forces — a path to your unit wellbeing officer, a clinician, or chaplaincy. You always remain in control of when and how you ask for support.",
   },
 ];
 
 const faqs = [
   {
     q: "Is the AI diagnosing me?",
-    a: "No. Sentinel's AI is an assistance tool, not a clinician. It summarises, reflects, and offers evidence-based techniques from the resources library. It does not assign diagnoses and must not be used as a substitute for professional assessment.",
+    a: "No. CRPF MHS AI is an assistance tool, not a clinician. It summarises, reflects, and offers evidence-based techniques from the resources library. It does not assign diagnoses and must not be used as a substitute for professional assessment.",
   },
   {
     q: "Who sees my journals and conversations?",
     a: "By default, only you. Your raw journal content and AI conversations are treated as sensitive and are encrypted at rest with field-level protection. Access by supervisors, clinicians, or administrators requires elevated role permissions and is always written to the audit log.",
   },
   {
-    q: "Is Sentinel anonymous?",
-    a: "No — and it would be misleading to claim otherwise. Sentinel identifies you so it can route support to you when you ask for it, and so commanders and clinicians can see operational trends. What it does provide is granular consent, role-based access, and a complete audit trail so access is always traceable.",
+    q: "Is CRPF MHS anonymous?",
+    a: "No — and it would be misleading to claim otherwise. CRPF MHS identifies you so it can route support to you when you ask for it, and so commanders and clinicians can see operational trends. What it does provide is granular consent, role-based access, and a complete audit trail so access is always traceable.",
   },
   {
     q: "What happens in a crisis?",
-    a: "Sentinel is not an emergency service. If you are in immediate danger, contact your local emergency services. The platform surfaces emergency contacts prominently and offers a discreet path to your unit wellbeing officer or clinician. When high-risk signals are detected in your check-ins or journals, Sentinel will encourage you to reach out — and may, with your consent, help route that request.",
+    a: "CRPF MHS is not an emergency service. If you are in immediate danger, contact your local emergency services. The platform surfaces emergency contacts prominently and offers a discreet path to your unit wellbeing officer or clinician. When high-risk signals are detected in your check-ins or journals, CRPF MHS will encourage you to reach out — and may, with your consent, help route that request.",
   },
   {
     q: "Can I withdraw consent later?",
@@ -95,7 +95,7 @@ export default function HowItWorksView() {
     <div className="bg-background">
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <PageHeader
-          title="How Sentinel works"
+          title="How CRPF MHS works"
           description="From registration to human support — seven steps, all designed around your privacy and your control."
         >
           <Button onClick={() => navigate("register")}>
@@ -192,7 +192,7 @@ export default function HowItWorksView() {
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button variant="outline" onClick={() => navigate("about")}>
-                Learn more about Sentinel
+                Learn more about CRPF MHS
               </Button>
               <Button onClick={() => navigate("register")}>
                 Get Started <ArrowRight className="ml-1 h-4 w-4" />

@@ -32,7 +32,7 @@ const sections = [
     body: (
       <div className="space-y-3">
         <p>
-          Sentinel is designed to support armed forces and uniformed-service
+          CRPF MHS is designed to support armed forces and uniformed-service
           personnel. To do that, we collect the following categories of
           information:
         </p>
@@ -158,7 +158,7 @@ const sections = [
     body: (
       <div className="space-y-3">
         <p>
-          Wellbeing content is inherently sensitive. Sentinel protects it
+          Wellbeing content is inherently sensitive. CRPF MHS protects it
           with multiple layers:
         </p>
         <ul className="ml-5 list-disc space-y-1.5">
@@ -230,7 +230,7 @@ export default function PrivacyView() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <PageHeader
           title="Privacy & data protection"
-          description="A clear, honest explanation of what Sentinel collects, why, who can see it, and the rights you have over your data."
+              description="A clear, honest explanation of what CRPF MHS collects, why, who can see it, and the rights you have over your data."
         >
           <Button variant="outline" onClick={() => navigate("support")}>
             <HeartCrack className="mr-1.5 h-4 w-4" /> Need support?
@@ -242,11 +242,11 @@ export default function PrivacyView() {
           <CardContent className="flex items-start gap-3 py-4">
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-300" />
             <div className="text-sm leading-relaxed text-amber-900/90 dark:text-amber-100/80">
-              <p className="font-semibold">Sentinel is not anonymous.</p>
+              <p className="font-semibold">CRPF MHS is not anonymous.</p>
               <p className="mt-1">
                 The platform identifies you so it can route support to you when
                 you ask for it, and so commanders and clinicians can see
-                operational trends. What Sentinel provides is granular consent,
+                operational trends. What CRPF MHS provides is granular consent,
                 strict role-based access, field-level encryption, and a complete
                 audit trail — not anonymity.
               </p>

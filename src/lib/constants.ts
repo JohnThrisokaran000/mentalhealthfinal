@@ -18,6 +18,9 @@ export const PERMISSIONS: Record<Role, Permission[]> = {
   ],
   ADMIN: [
     "VIEW_USER_PROFILE",
+    "VIEW_ASSESSMENT",
+    "VIEW_JOURNAL",
+    "VIEW_AI_CONVERSATION",
     "VIEW_RISK_INDICATOR",
     "MANAGE_ALERTS",
     "MANAGE_USERS",
@@ -233,6 +236,6 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   system_seed: "System seed",
 };
 
-export const APP_NAME = "Sentinel";
+export const APP_NAME = "CRPF MHS";
 export const APP_TAGLINE = "Wellbeing, early support, and confidential check-ins for armed forces personnel.";
 export const CONSENT_VERSION = "1.0.0";

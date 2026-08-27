@@ -39,6 +39,7 @@ async function _GET() {
 
 async function _POST(req: NextRequest) {
   const { user } = await requireAuth();
+  if (user.role !== "USER") return jsonError("Only CRPF personnel can create journal entries.", 403, "USER_ONLY");
   let body: unknown;
   try { body = await req.json(); } catch { return jsonError("Invalid JSON", 400); }
   const parsed = createSchema.safeParse(body);

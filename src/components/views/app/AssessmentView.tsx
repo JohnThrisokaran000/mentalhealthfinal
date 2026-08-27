@@ -100,7 +100,7 @@ export default function AssessmentView() {
             <HeartPulse className="h-7 w-7" strokeWidth={2} />
           </div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-            {isRetake ? "Re-take check-in" : "Welcome to Sentinel"}
+            {isRetake ? "Re-take check-in" : "Welcome to CRPF MHS"}
           </p>
           <h1 className="serif mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {isRetake ? "Let's check in again" : "Let's start with a quick check-in"}

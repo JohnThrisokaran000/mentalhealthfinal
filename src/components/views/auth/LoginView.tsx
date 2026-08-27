@@ -30,10 +30,11 @@ import {
 const schema = z.object({
   email: z.string().min(1, "Enter your email").email("Enter a valid email address"),
   password: z.string().min(1, "Enter your password"),
-  remember: z.boolean().optional().default(false),
+  remember: z.boolean().default(false),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormInput = z.input<typeof schema>;
+type FormValues = z.output<typeof schema>;
 
 const DEV_CREDENTIALS: { email: string; label: string }[] = [
   { email: "admin@sentinel.dev", label: "Administrator" },
@@ -50,7 +51,7 @@ export default function LoginView() {
   const [submitting, setSubmitting] = React.useState(false);
   const [lockedMsg, setLockedMsg] = React.useState<string | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, unknown, FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { email: "", password: "", remember: false },
   });
@@ -66,7 +67,9 @@ export default function LoginView() {
       setUser(user);
       const firstName = user.name?.split(" ")[0];
       toast.success(firstName ? `Welcome back, ${firstName}.` : "Welcome back.");
-      if (!user.onboardingComplete) navigate("assessment");
+      if (["ADMIN", "SUPER_ADMIN", "MENTAL_HEALTH_PROFESSIONAL", "SUPERVISOR"].includes(user.role)) {
+        navigate("admin-personnel");
+      } else if (!user.onboardingComplete) navigate("assessment");
       else navigate("dashboard");
     } catch (err) {
       if (err instanceof ApiRequestError) {
@@ -99,11 +102,11 @@ export default function LoginView() {
   return (
     <AuthShell
       eyebrow="Secure access"
-      title="Sign in to Sentinel"
+      title="Sign in to CRPF MHS"
       description="Your confidential wellbeing companion for armed forces personnel."
       footer={
         <p>
-          New to Sentinel?{" "}
+          New to CRPF MHS?{" "}
           <button
             type="button"
             onClick={() => navigate("register")}

@@ -42,7 +42,7 @@ async function _GET(_req: NextRequest, { params }: { params: Promise<{ id: strin
   const { user } = await requireAuth();
   const { id } = await params;
   const res = await resolveJournal(id, user.id, user.role);
-  if ("error" in res) return res.error;
+  if ("error" in res && res.error) return res.error;
   const isOwn = res.j.userId === user.id;
   await logAudit({
     actorId: user.id,
@@ -58,7 +58,7 @@ async function _PUT(req: NextRequest, { params }: { params: Promise<{ id: string
   const { user } = await requireAuth();
   const { id } = await params;
   const res = await resolveJournal(id, user.id, user.role);
-  if ("error" in res) return res.error;
+  if ("error" in res && res.error) return res.error;
   if (res.j.userId !== user.id) return jsonError("You can only edit your own journal entries.", 403);
 
   let body: unknown;
@@ -98,7 +98,7 @@ async function _DELETE(_req: NextRequest, { params }: { params: Promise<{ id: st
   const { user } = await requireAuth();
   const { id } = await params;
   const res = await resolveJournal(id, user.id, user.role);
-  if ("error" in res) return res.error;
+  if ("error" in res && res.error) return res.error;
   if (res.j.userId !== user.id) return jsonError("You can only delete your own journal entries.", 403);
   await db.dailyJournal.delete({ where: { id } });
   await logAudit({ actorId: user.id, action: "journal_deleted", targetType: "Journal", targetId: id });

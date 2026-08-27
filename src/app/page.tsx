@@ -1,13 +1,14 @@
 "use client";
 
 import { lazy, Suspense, useEffect } from "react";
-import { useApp } from "@/lib/store";
+import { useApp, viewFromPath } from "@/lib/store";
 import { AuthBootstrap } from "@/components/shared/auth-bootstrap";
 import { PublicNavbar } from "@/components/layout/public-navbar";
 import { PublicFooter } from "@/components/layout/public-footer";
 import { AppShell } from "@/components/layout/app-shell";
 import { AdminShell } from "@/components/layout/admin-shell";
-import { FullSpinner } from "@/components/shared/ui";
+import { LoadingScreen } from "@/components/shared/loading-screen";
+import { HindiTranslationLayer } from "@/components/shared/hindi-translation-layer";
 import { hasPermission } from "@/lib/constants";
 import type { View } from "@/lib/store";
 
@@ -61,7 +62,7 @@ const ADMIN_ROLES = ["ADMIN", "SUPER_ADMIN", "MENTAL_HEALTH_PROFESSIONAL", "SUPE
 
 function ViewLoader() {
   const view = useApp((s) => s.view);
-  const map: Record<View, React.LazyExoticComponent<() => JSX.Element>> = {
+  const map: Record<View, React.LazyExoticComponent<React.ComponentType>> = {
     home: LandingView, about: AboutView, "how-it-works": HowItWorksView,
     resources: ResourcesView, support: SupportView, contact: ContactView,
     privacy: PrivacyView,
@@ -83,9 +84,28 @@ function ViewLoader() {
 export default function Home() {
   const { view, user, navigate } = useApp();
 
+  // Keep the dispatcher aligned with browser navigation and direct, shareable URLs.
+  useEffect(() => {
+    const syncFromLocation = () => {
+      const next = viewFromPath(window.location.pathname);
+      navigate(next.view, next.params, false);
+    };
+    syncFromLocation();
+    window.addEventListener("popstate", syncFromLocation);
+    return () => window.removeEventListener("popstate", syncFromLocation);
+  }, [navigate]);
+
   // Guards: route based on auth + role. (UI convenience only — backend re-enforces.)
   useEffect(() => {
     if (!user) return;
+    if (ADMIN_ROLES.includes(user.role) && APP_VIEWS.includes(view)) {
+      navigate("admin-personnel");
+      return;
+    }
+    if (!ADMIN_ROLES.includes(user.role) && ADMIN_VIEWS.includes(view)) {
+      navigate("dashboard");
+      return;
+    }
     // logged-in user lingering on public/auth pages → send to dashboard
     if (PUBLIC_VIEWS.includes(view) && !["privacy", "resources", "support", "contact"].includes(view)) {
       if (user.onboardingComplete) navigate("dashboard");
@@ -118,22 +138,23 @@ export default function Home() {
   return (
     <AuthBootstrap>
       <div className="flex min-h-screen flex-col">
+        <HindiTranslationLayer />
         {isPublic && <PublicNavbar />}
         {isAdmin ? (
           <AdminShell>
-            <Suspense fallback={<FullSpinner label="Loading…" />}>
+            <Suspense fallback={<LoadingScreen label="Loading CRPF MHS…" />}>
               <ViewLoader />
             </Suspense>
           </AdminShell>
         ) : isApp ? (
           <AppShell>
-            <Suspense fallback={<FullSpinner label="Loading…" />}>
+            <Suspense fallback={<LoadingScreen label="Loading CRPF MHS…" />}>
               <ViewLoader />
             </Suspense>
           </AppShell>
         ) : (
           <div className="flex flex-1 flex-col">
-            <Suspense fallback={<FullSpinner label="Loading…" />}>
+            <Suspense fallback={<LoadingScreen label="Loading CRPF MHS…" />}>
               <ViewLoader />
             </Suspense>
             <PublicFooter />

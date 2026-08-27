@@ -2,6 +2,7 @@ import { db } from "./db";
 import { hashPassword } from "./auth";
 import { RESOURCE_CATEGORIES } from "./constants";
 import type { WellbeingLevel } from "./types";
+import type { User } from "@prisma/client";
 
 // Development-only seed data. All accounts are clearly marked DEV-only.
 // Never use real personal data.
@@ -174,7 +175,7 @@ export async function runSeed(force = false): Promise<{ created: number; skipped
   }
 
   // Users
-  const users = [];
+  const users: User[] = [];
   for (const s of SEED_USERS) {
     const u = await db.user.create({
       data: {

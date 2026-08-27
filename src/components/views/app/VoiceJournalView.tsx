@@ -67,7 +67,10 @@ export default function VoiceJournalView() {
     }
   }, []);
 
-  useEffect(() => { loadRecent(); }, [loadRecent]);
+  useEffect(() => {
+    const loadId = window.setTimeout(() => { void loadRecent(); }, 0);
+    return () => window.clearTimeout(loadId);
+  }, [loadRecent]);
 
   useEffect(() => () => {
     // cleanup
@@ -213,7 +216,7 @@ export default function VoiceJournalView() {
                   {phase === "recording" ? (
                     <button
                       onClick={stopRecording}
-                      disabled={phase === "stopping" || phase === "transcribing"}
+                      disabled={false}
                       aria-label="Stop recording"
                       className="rec-pulse inline-flex h-24 w-24 items-center justify-center rounded-full bg-destructive text-destructive-foreground transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 disabled:opacity-60"
                     >

@@ -67,7 +67,10 @@ export default function ProfileView() {
     } finally { setLoadingConsent(false); }
   }, []);
 
-  useEffect(() => { loadConsents(); }, [loadConsents]);
+  useEffect(() => {
+    const loadId = window.setTimeout(() => { void loadConsents(); }, 0);
+    return () => window.clearTimeout(loadId);
+  }, [loadConsents]);
 
   function getStatus(purpose: string): "GRANTED" | "WITHDRAWN" | null {
     const rec = consents.find((c) => c.purpose === purpose);
@@ -222,7 +225,7 @@ export default function ProfileView() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <ToggleRow label="Anonymous usage analytics" desc="Help us improve Sentinel — no personal data shared." />
+          <ToggleRow label="Anonymous usage analytics" desc="Help us improve CRPF MHS — no personal data shared." />
           <ToggleRow label="Share de-identified insights with research" desc="Contribute to armed forces wellbeing research." />
         </CardContent>
       </Card>
@@ -342,7 +345,7 @@ export default function ProfileView() {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {pendingChange?.status === "GRANTED"
-                ? "This will allow Sentinel to process your data for this purpose going forward."
+                ? "This will allow CRPF MHS to process your data for this purpose going forward."
                 : "Withdrawing may disable some features. You can re-grant consent at any time."}
             </AlertDialogDescription>
           </AlertDialogHeader>

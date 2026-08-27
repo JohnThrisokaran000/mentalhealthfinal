@@ -2,7 +2,8 @@
 
 import {
   LayoutDashboard, Users, ShieldAlert, BellRing, BarChart3,
-  ScrollText, Settings, LogOut, Menu, Sun, Moon, ChevronRight,
+  ScrollText, Settings, LogOut, Sun, Moon, ChevronRight,
+  Languages,
 } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
@@ -12,23 +13,23 @@ import { ADMIN_NAV, ROLE_LABELS } from "@/lib/constants";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { View } from "@/lib/store";
+import { translate } from "@/lib/i18n";
+import { BackButton } from "@/components/shared/back-button";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, Users, ShieldAlert, BellRing, BarChart3, ScrollText, Settings,
 };
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
-  const { user, view, navigate, theme, toggleTheme, mobileNavOpen, setMobileNavOpen } = useApp();
+  const { user, view, navigate, theme, toggleTheme, mobileNavOpen, setMobileNavOpen, language, setLanguage } = useApp();
 
   const Sidebar = (
     <div className="flex h-full flex-col bg-sidebar">
       <div className="flex h-16 items-center border-b border-sidebar-border px-5">
         <button onClick={() => navigate("admin")}>
-          <span className="inline-flex items-center gap-2.5">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg shadow-sm" style={{ background: "oklch(0.42 0.05 178)" }}>
-              <ShieldAlert className="h-4 w-4 text-white" />
-            </span>
-            <span className="font-semibold tracking-tight text-sidebar-foreground">Sentinel <span className="text-primary">Admin</span></span>
+            <span className="inline-flex items-center gap-2.5">
+            <Logo size={28} />
+            <span className="font-semibold tracking-tight text-sidebar-foreground">CRPF MHS <span className="text-primary">Admin</span></span>
           </span>
         </button>
       </div>
@@ -46,7 +47,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {item.label}
+              {translate(item.label, language)}
             </button>
           );
         })}
@@ -66,7 +67,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           variant="ghost" size="sm" className="mt-1 w-full justify-start text-muted-foreground"
           onClick={async () => { await api.post("/api/auth/logout"); useApp.getState().setUser(null); useApp.getState().navigate("home"); }}
         >
-          <LogOut className="mr-2 h-4 w-4" /> Sign out
+          <LogOut className="mr-2 h-4 w-4" /> {translate("Sign out", language)}
         </Button>
       </div>
     </div>
@@ -78,21 +79,36 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         {Sidebar}
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/15 bg-[#1d256f] px-4 text-white shadow-sm backdrop-blur sm:px-6">
           <div className="flex items-center gap-3">
+            <BackButton fallback="admin" />
             <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
-                  <Menu className="h-5 w-5" />
-                </Button>
+                <button
+                  type="button"
+                  aria-label={translate("Open menu", language)}
+                  aria-haspopup="dialog"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/20 bg-transparent transition hover:border-white/40 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 lg:hidden"
+                >
+                  <span className="flex flex-col gap-[5px]" aria-hidden="true">
+                    <span className="block h-[3px] w-[22px] rounded-full bg-[#FF9933]" />
+                    <span className="block h-[3px] w-[22px] rounded-full bg-white/80" />
+                    <span className="block h-[3px] w-[22px] rounded-full bg-[#138808]" />
+                  </span>
+                </button>
               </SheetTrigger>
               <SheetContent side="left" className="w-72 p-0">{Sidebar}</SheetContent>
             </Sheet>
-            <h1 className="text-lg font-semibold text-foreground">{ADMIN_NAV.find((n) => n.key === view)?.label ?? "Admin"}</h1>
+            <h1 className="text-lg font-semibold text-white">{translate(ADMIN_NAV.find((n) => n.key === view)?.label ?? "Admin", language)}</h1>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
-            {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === "en" ? "hi" : "en")} aria-label={translate("Toggle script", language)} className="text-white hover:bg-white/10 hover:text-white">
+              <Languages className="mr-1.5 h-4 w-4" /> {language === "en" ? "हिंदी" : "English"}
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme" className="text-white hover:bg-white/10 hover:text-white">
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
+          </div>
         </header>
         <main className="min-h-0 flex-1">{children}</main>
       </div>

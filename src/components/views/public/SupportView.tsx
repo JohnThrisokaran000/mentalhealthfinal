@@ -123,7 +123,7 @@ export default function SupportView() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <PageHeader
           title="Support"
-          description="Confidential pathways to the right people — within your unit and beyond. Sentinel does not replace emergency services."
+          description="Confidential pathways to the right people — within your unit and beyond. CRPF MHS does not replace emergency services."
         />
 
         {/* --------------------------------------- NEED IMMEDIATE HELP CARD */}
@@ -140,7 +140,7 @@ export default function SupportView() {
               </div>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-amber-800/90 dark:text-amber-100/80">
                 If you or someone else is in immediate danger, contact your
-                local emergency services right now. Sentinel is not an
+                local emergency services right now. CRPF MHS is not an
                 emergency service — but the contacts below can help you reach
                 the right support within your chain of care.
               </p>
@@ -312,7 +312,7 @@ export default function SupportView() {
                   <HeartCrack className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      Sentinel is not a crisis service.
+                      CRPF MHS is not a crisis service.
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                       This form is not monitored 24/7 and is not a diagnosis tool.

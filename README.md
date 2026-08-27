@@ -2,6 +2,8 @@
 
 A confidential, AI-assisted **wellbeing and early-support** platform for armed forces and uniformed-service personnel. Regular check-ins, daily journaling (text + voice), an AI-assisted companion, configurable risk monitoring, audited sensitive-access controls, and a secure admin console.
 
+> This repository now also includes a standalone [`backend/`](backend/README.md) FastAPI service, Alembic migration, focused backend tests, and a full PostgreSQL/Redis Docker Compose stack. The existing Next.js application remains at repository root as the frontend/BFF implementation; its app routes preserve the current interface while the FastAPI service exposes the documented API contract for deployment integration.
+
 > **Important:** Sentinel is an *AI-assisted wellbeing and early-support system*. It does **not** diagnose mental illness and does **not** replace qualified mental-health professionals. Any potentially high-risk situation surfaces human-support options and creates an internal alert for authorized personnel.
 
 ---
@@ -168,6 +170,27 @@ curl -X POST http://localhost:3000/api/seed
 ```
 
 Then open the **Preview Panel** (the app runs on port 3000 internally — use the Preview button, not `localhost`).
+
+## FastAPI service and Docker
+
+The standalone backend lives in [`backend/`](backend/README.md) and exposes its OpenAPI console at `http://localhost:8000/docs`.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r backend\requirements.txt
+Set-Location backend
+alembic upgrade head
+uvicorn app.main:app --reload --port 8000
+```
+
+Or use the full service stack after copying `.env.example` to `.env`:
+
+```powershell
+docker compose up --build
+```
+
+The FastAPI backend defaults to mock AI/STT output. It provides a server-owned provider abstraction, deterministic wellbeing safety rules, Argon2 hashing, JWT access tokens, rotated refresh sessions, and explicit RBAC dependencies. The current root Next.js interface retains its existing API/BFF routes for compatibility; integrating it against the FastAPI contract is a deployment migration rather than a silent replacement.
 
 ## Development Credentials
 

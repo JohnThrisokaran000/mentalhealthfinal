@@ -15,14 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sentinel — Armed Forces Wellbeing Platform",
+  title: "CRPF MHS — Armed Forces Wellbeing Platform",
   description:
     "Confidential wellbeing check-ins, journaling, AI-assisted early support and professional escalation for armed forces and uniformed-service personnel.",
   keywords: [
     "mental wellbeing", "armed forces", "early support", "wellbeing check-in",
     "journaling", "AI-assisted support", "operational stress",
   ],
-  authors: [{ name: "Sentinel Platform" }],
+  authors: [{ name: "CRPF MHS" }],
   icons: { icon: "/favicon.svg" },
 };
 

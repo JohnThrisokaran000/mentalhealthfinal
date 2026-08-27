@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, LockKeyhole, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 
 import {
   Card,
@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/shared/logo";
 import { cn } from "@/lib/utils";
+import { useApp } from "@/lib/store";
 
 /**
  * Shared layout for all authentication views.
@@ -33,6 +34,7 @@ export function AuthShell({
   children: React.ReactNode;
   footer?: React.ReactNode;
 }) {
+  const language = useApp((state) => state.language);
   return (
     <div className="relative flex min-h-[78vh] flex-1 items-center justify-center overflow-hidden px-4 py-12 sm:px-6">
       {/* Calm split background */}
@@ -84,8 +86,8 @@ export function AuthShell({
         </Card>
 
         <p className="mt-6 flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
-          <ShieldCheck className="h-3.5 w-3.5 text-primary" aria-hidden />
-          Encrypted in transit · Accessible only to authorised personnel
+          <Logo size={18} />
+          {language === "hi" ? "स्थानांतरण के दौरान एन्क्रिप्टेड · केवल अधिकृत कर्मियों के लिए उपलब्ध" : "Encrypted in transit · Accessible only to authorised personnel"}
         </p>
       </motion.div>
     </div>

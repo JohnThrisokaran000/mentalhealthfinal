@@ -92,7 +92,10 @@ export default function AdminPersonView() {
     } finally { setLoading(false); }
   }, [id]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const loadId = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(loadId);
+  }, [load]);
 
   if (!id) {
     return (
@@ -136,6 +139,12 @@ export default function AdminPersonView() {
   const trendData = [...data.riskTrend].reverse().map((t, i) => ({
     idx: i, level: t.level, color: LEVEL_META[t.level].dot, createdAt: t.createdAt,
   }));
+  const activityData = [
+    { label: "Assessments", count: data.assessments.length, color: "#1d256f" },
+    { label: "Journals", count: data.journals.length, color: "#1d256f" },
+    { label: "Voice", count: data.voiceEntries.length, color: "#1d256f" },
+    { label: "AI chats", count: data.conversations.length, color: "#1d256f" },
+  ];
 
   return (
     <AdminPage>
@@ -510,6 +519,24 @@ export default function AdminPersonView() {
                 <Stat icon={Mic} label="Voice entries" value={String(data.voiceEntries.length)} hideIf={!data.visible.journals} />
                 <Stat icon={MessageCircleHeart} label="Conversations" value={String(data.conversations.length)} hideIf={!data.visible.conversations} />
               </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Member Activity</CardTitle>
+              <CardDescription>Saved wellbeing activity for this personnel member.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-44 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={activityData} margin={{ top: 8, right: 4, left: -24, bottom: 0 }}>
+                    <XAxis dataKey="label" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                    <Tooltip cursor={{ fill: "#1d256f12" }} contentStyle={{ borderRadius: 8, border: "1px solid #1d256f33", background: "white", fontSize: 12 }} />
+                    <Bar dataKey="count" fill="#1d256f" radius={[5, 5, 0, 0]} maxBarSize={32} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
         </div>

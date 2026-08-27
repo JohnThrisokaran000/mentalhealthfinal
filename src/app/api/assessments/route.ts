@@ -38,6 +38,7 @@ const submitSchema = z.object({
 // POST /api/assessments — submit assessment. Scoring is ALWAYS server-side.
 async function _POST(req: NextRequest) {
   const { user } = await requireAuth();
+  if (user.role !== "USER") return jsonError("Only CRPF personnel can complete assessments.", 403, "USER_ONLY");
   let body: unknown;
   try { body = await req.json(); } catch { return jsonError("Invalid JSON", 400); }
   const parsed = submitSchema.safeParse(body);

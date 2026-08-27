@@ -128,7 +128,7 @@ class MockAIProvider implements AIProvider {
 // Real provider — z-ai-web-dev-sdk. Server-only.
 // ---------------------------------------------------------------------------
 
-const SYSTEM_PROMPT = `You are Sentinel, an AI-assisted wellbeing and early-support companion for armed forces and uniformed-service personnel.
+const SYSTEM_PROMPT = `You are CRPF MHS, an AI-assisted wellbeing and early-support companion for armed forces and uniformed-service personnel.
 
 ABSOLUTE RULES — never violate these:
 - You are NOT a doctor, therapist, or clinician. You do NOT diagnose mental illness or prescribe treatment.

@@ -109,7 +109,7 @@ export default function SettingsView() {
     <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-6">
         <h1 className="serif text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Settings</h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">Personalize how Sentinel looks and behaves.</p>
+        <p className="mt-1.5 text-sm text-muted-foreground">Personalize how CRPF MHS looks and behaves.</p>
       </div>
 
       {/* Appearance */}
@@ -118,7 +118,7 @@ export default function SettingsView() {
           <CardTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
             <Sun className="h-4 w-4 text-primary" /> Appearance
           </CardTitle>
-          <CardDescription className="text-xs">Choose how Sentinel looks.</CardDescription>
+          <CardDescription className="text-xs">Choose how CRPF MHS looks.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
           {/* Theme */}
@@ -219,7 +219,7 @@ export default function SettingsView() {
           <ToggleRow label="Wellbeing tips" desc="Occasional articles & resources."
             checked={notifications.wellbeingTips}
             onChange={(v) => setNotifications((p) => ({ ...p, wellbeingTips: v }))} />
-          <ToggleRow label="Product news" desc="Sentinel platform updates."
+            <ToggleRow label="Product news" desc="CRPF MHS platform updates."
             checked={notifications.productNews}
             onChange={(v) => setNotifications((p) => ({ ...p, productNews: v }))} />
 
@@ -247,7 +247,7 @@ export default function SettingsView() {
       </Card>
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
-        Sentinel Wellbeing Platform · v1.0.0
+        CRPF MHS Wellbeing Platform · v1.0.0
       </p>
     </div>
   );

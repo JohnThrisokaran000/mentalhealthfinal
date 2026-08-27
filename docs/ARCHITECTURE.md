@@ -4,6 +4,8 @@
 
 All file paths in this document are relative to the repository root (`/home/z/my-project`).
 
+> **FastAPI deployment service:** The repository now additionally contains `backend/`, a standalone FastAPI/SQLAlchemy/Alembic service with PostgreSQL and Redis Compose services. The root Next.js app remains the current frontend/BFF implementation; `backend/` exposes the documented deployment API and is deliberately isolated so it can be adopted without breaking the existing user interface. See [API.md](API.md) and [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ---
 
 ## 1. System architecture
