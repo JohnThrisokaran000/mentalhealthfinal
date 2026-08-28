@@ -107,7 +107,7 @@ export default function Home() {
       return;
     }
     // logged-in user lingering on public/auth pages → send to dashboard
-    if (PUBLIC_VIEWS.includes(view) && !["privacy", "resources", "support", "contact"].includes(view)) {
+    if (PUBLIC_VIEWS.includes(view) && !["home", "privacy", "resources", "support", "contact"].includes(view)) {
       if (user.onboardingComplete) navigate("dashboard");
       else navigate("assessment");
       return;

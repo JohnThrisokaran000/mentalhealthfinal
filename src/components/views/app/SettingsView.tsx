@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-  Sun, Moon, Monitor, BellRing, Type, Accessibility, ShieldCheck,
+  BellRing, Type, Accessibility, ShieldCheck,
   Database, ChevronRight, Save, Contrast, Eye,
 } from "lucide-react";
 import { useApp } from "@/lib/store";
@@ -66,7 +66,7 @@ function readBoolPref(key: string, fallback: () => boolean): boolean {
 }
 
 export default function SettingsView() {
-  const { theme, setTheme, navigate } = useApp();
+  const { navigate } = useApp();
 
   const [fontSize, setFontSize] = useState<FontSize>(readFontSize);
   const [reduceMotion, setReduceMotion] = useState(() =>
@@ -112,31 +112,9 @@ export default function SettingsView() {
         <p className="mt-1.5 text-sm text-muted-foreground">Personalize how CRPF MHS looks and behaves.</p>
       </div>
 
-      {/* Appearance */}
+      {/* Accessibility */}
       <Card className="border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
-            <Sun className="h-4 w-4 text-primary" /> Appearance
-          </CardTitle>
-          <CardDescription className="text-xs">Choose how CRPF MHS looks.</CardDescription>
-        </CardHeader>
         <CardContent className="space-y-5">
-          {/* Theme */}
-          <div>
-            <Label className="text-xs font-medium text-foreground">Theme</Label>
-            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              <ThemeOption icon={Sun} label="Light" active={theme === "light"} onClick={() => setTheme("light")} />
-              <ThemeOption icon={Moon} label="Dark" active={theme === "dark"} onClick={() => setTheme("dark")} />
-              <ThemeOption icon={Monitor} label="System" active={false} onClick={() => {
-                const sysDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-                setTheme(sysDark ? "dark" : "light");
-                toast.info("Synced with system theme.");
-              }} />
-            </div>
-          </div>
-
-          <Separator />
-
           {/* Font size */}
           <div>
             <div className="mb-2 flex items-center justify-between">
@@ -250,24 +228,6 @@ export default function SettingsView() {
         CRPF MHS Wellbeing Platform · v1.0.0
       </p>
     </div>
-  );
-}
-
-function ThemeOption({ icon: Icon, label, active, onClick }: { icon: any; label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-card hover:border-primary/40 hover:bg-muted/40 text-foreground/80"
-      }`}
-    >
-      <Icon className="h-4 w-4" />
-      {label}
-    </button>
   );
 }
 

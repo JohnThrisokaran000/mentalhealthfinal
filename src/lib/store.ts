@@ -52,11 +52,6 @@ interface AppState {
   loadingUser: boolean;
   setLoadingUser: (b: boolean) => void;
 
-  // theme
-  theme: "light" | "dark";
-  toggleTheme: () => void;
-  setTheme: (t: "light" | "dark") => void;
-
   // mobile nav
   mobileNavOpen: boolean;
   setMobileNavOpen: (b: boolean) => void;
@@ -84,21 +79,6 @@ export const useApp = create<AppState>((set, get) => ({
   setUser: (user) => set({ user }),
   loadingUser: true,
   setLoadingUser: (loadingUser) => set({ loadingUser }),
-
-  theme: "light",
-  toggleTheme: () => {
-    const next = get().theme === "light" ? "dark" : "light";
-    set({ theme: next });
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", next === "dark");
-    }
-  },
-  setTheme: (theme) => {
-    set({ theme });
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", theme === "dark");
-    }
-  },
 
   mobileNavOpen: false,
   setMobileNavOpen: (mobileNavOpen) => set({ mobileNavOpen }),

@@ -2,7 +2,7 @@
 
 import {
   LayoutDashboard, Users, ShieldAlert, BellRing, BarChart3,
-  ScrollText, Settings, LogOut, Sun, Moon, ChevronRight,
+  ScrollText, Settings, LogOut, ChevronRight,
   Languages,
 } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
@@ -21,7 +21,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
-  const { user, view, navigate, theme, toggleTheme, mobileNavOpen, setMobileNavOpen, language, setLanguage } = useApp();
+  const { user, view, navigate, mobileNavOpen, setMobileNavOpen, language, setLanguage } = useApp();
 
   const Sidebar = (
     <div className="flex h-full flex-col bg-sidebar">
@@ -81,7 +81,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/15 bg-[#1d256f] px-4 text-white shadow-sm backdrop-blur sm:px-6">
           <div className="flex items-center gap-3">
-            <BackButton fallback="admin" />
+            <BackButton />
+          </div>
+          <div className="flex items-center gap-1">
             <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger asChild>
                 <button
@@ -99,14 +101,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               </SheetTrigger>
               <SheetContent side="left" className="w-72 p-0">{Sidebar}</SheetContent>
             </Sheet>
-            <h1 className="text-lg font-semibold text-white">{translate(ADMIN_NAV.find((n) => n.key === view)?.label ?? "Admin", language)}</h1>
-          </div>
-          <div className="flex items-center gap-1">
             <Button variant="ghost" size="sm" onClick={() => setLanguage(language === "en" ? "hi" : "en")} aria-label={translate("Toggle script", language)} className="text-white hover:bg-white/10 hover:text-white">
               <Languages className="mr-1.5 h-4 w-4" /> {language === "en" ? "हिंदी" : "English"}
-            </Button>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme" className="text-white hover:bg-white/10 hover:text-white">
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
           </div>
         </header>

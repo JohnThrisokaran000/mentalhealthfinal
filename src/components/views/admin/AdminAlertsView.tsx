@@ -58,16 +58,28 @@ export default function AdminAlertsView() {
       p.set("pageSize", String(PAGE_SIZE));
       if (status !== "all") p.set("status", status);
       if (severity !== "all") p.set("severity", severity);
-      const r = await api.get<Resp>(`/api/admin/alerts?${p.toString()}`);
-      setData(r);
+      const r = await api.get<{
+        alerts: AlertDTO[];
+        total?: number;
+        page?: number;
+        pageSize?: number;
+        pages?: number;
+      }>(`/api/admin/alerts?${p.toString()}`);
+      setData({
+        alerts: r.alerts ?? [],
+        total: r.total ?? r.alerts?.length ?? 0,
+        page: r.page ?? 1,
+        pageSize: r.pageSize ?? r.alerts?.length ?? 0,
+        pages: r.pages ?? 1,
+      });
     } catch (e) {
       if (e instanceof ApiRequestError && e.status === 403) setForbidden(true);
       else setError(e instanceof Error ? e.message : "Failed to load alerts");
     } finally { setLoading(false); }
   }, [page, status, severity]);
 
-  useEffect(() => { load(); }, [load]);
-  useEffect(() => { setPage(1); }, [status, severity]);
+  useEffect(() => { const id = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(id); }, [load]);
+  useEffect(() => { const id = window.setTimeout(() => setPage(1), 0); return () => window.clearTimeout(id); }, [status, severity]);
 
   const updateAlert = useCallback(async (id: string, body: { status?: AlertStatus; assignedToId?: string | null }) => {
     setActingId(id);

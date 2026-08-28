@@ -79,8 +79,8 @@ export default function AdminAuditView() {
     } finally { setLoading(false); }
   }, [page, action]);
 
-  useEffect(() => { load(); }, [load]);
-  useEffect(() => { setPage(1); }, [action]);
+  useEffect(() => { const id = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(id); }, [load]);
+  useEffect(() => { const id = window.setTimeout(() => setPage(1), 0); return () => window.clearTimeout(id); }, [action]);
 
   if (forbidden) {
     return (

@@ -58,7 +58,7 @@ export default function AdminAnalyticsView() {
     } finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { const id = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(id); }, [load]);
 
   const canAnalytics = user ? hasPermission(user.role, "VIEW_ANALYTICS") : false;
 

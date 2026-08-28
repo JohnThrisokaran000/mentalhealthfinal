@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Form,
   FormControl,
@@ -215,22 +214,16 @@ export default function LoginView() {
         <Separator className="flex-1" />
       </div>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="block w-full">
-            <Button
-              type="button"
-              variant="outline"
-              className="h-10 w-full pointer-events-none"
-              disabled
-            >
-              <GoogleIcon className="size-4" />
-              Continue with Google
-            </Button>
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>OAuth available in production deployment</TooltipContent>
-      </Tooltip>
+      <Button
+        asChild
+        variant="outline"
+        className="h-10 w-full"
+      >
+        <a href="/api/auth/google">
+          <GoogleIcon className="size-4" />
+          Continue with Google
+        </a>
+      </Button>
 
       <Alert className="mt-6 border-dashed bg-muted/40">
         <Info className="h-4 w-4 text-muted-foreground" />

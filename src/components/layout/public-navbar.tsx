@@ -9,6 +9,7 @@ import { useApp } from "@/lib/store";
 import { PUBLIC_NAV } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { BackButton } from "@/components/shared/back-button";
+import { translate } from "@/lib/i18n";
 
 const FONT_OPTIONS = [
   { value: "small", label: "Small", scale: 0.9 },
@@ -23,13 +24,6 @@ function readFontSize(): FontSize {
   if (typeof window === "undefined") return "normal";
   const saved = localStorage.getItem("sentinel:font-size") as FontSize | null;
   return FONT_OPTIONS.some((option) => option.value === saved) ? saved! : "normal";
-}
-
-function readBoolPref(key: string, fallback: boolean): boolean {
-  if (typeof window === "undefined") return fallback;
-  const value = localStorage.getItem(key);
-  if (value === null) return fallback;
-  return value === "1";
 }
 
 function ScriptGlyph() {
@@ -78,6 +72,9 @@ const translations = {
     highContrast: "High contrast",
     reduceMotion: "Reduce motion",
     reset: "Reset",
+    accessibilityOptions: "Accessibility options",
+    switchLanguage: "Switch to Hindi",
+    close: "Close accessibility menu",
   },
   hi: {
     login: "लॉगिन",
@@ -90,6 +87,9 @@ const translations = {
     highContrast: "उच्च कंट्रास्ट",
     reduceMotion: "आने वाले आंदोलनों को कम करें",
     reset: "रीसेट",
+    accessibilityOptions: "अभिगम्यता विकल्प",
+    switchLanguage: "अंग्रेज़ी पर स्विच करें",
+    close: "अभिगम्यता मेनू बंद करें",
   },
 } as const;
 
@@ -103,14 +103,13 @@ const NAV_LABELS: Record<string, { en: string; hi: string }> = {
 };
 
 export function PublicNavbar() {
-  const { view, navigate, language, setLanguage } = useApp();
+  const { view, navigate, language, setLanguage, user } = useApp();
   const [open, setOpen] = useState(false);
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
   const [fontSize, setFontSize] = useState<FontSize>(readFontSize);
-  const [highContrast, setHighContrast] = useState(() => readBoolPref("sentinel:high-contrast", false));
-  const [reduceMotion, setReduceMotion] = useState(() => readBoolPref("sentinel:reduce-motion", false));
   const t = translations[language];
+  const isAdmin = user && ["ADMIN", "SUPER_ADMIN", "MENTAL_HEALTH_PROFESSIONAL", "SUPERVISOR"].includes(user.role);
 
   useEffect(() => {
     const saved = localStorage.getItem("sentinel:language");
@@ -133,30 +132,20 @@ export function PublicNavbar() {
     localStorage.setItem("sentinel:font-size", fontSize);
   }, [fontSize]);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("high-contrast", highContrast);
-    localStorage.setItem("sentinel:high-contrast", highContrast ? "1" : "0");
-  }, [highContrast]);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("reduce-motion", reduceMotion);
-    localStorage.setItem("sentinel:reduce-motion", reduceMotion ? "1" : "0");
-  }, [reduceMotion]);
-
   const navItems = [...PUBLIC_NAV.map((item) => ({ ...item, label: NAV_LABELS[item.key][language] })), { key: "contact", label: NAV_LABELS.contact[language] }];
 
   return (
-    <header className="absolute left-0 top-0 z-40 w-full">
-      <div className="h-[3px] w-full bg-[linear-gradient(90deg,#FF9933_0,#FF9933_33.33%,#FFFFFF_33.33%,#FFFFFF_66.66%,#138808_66.66%,#138808_100%)]" />
+    <header className={cn("left-0 top-0 z-40 w-full", view === "home" ? "absolute" : "relative")}>
+      <div className="h-[6px] w-full bg-[linear-gradient(90deg,#FF9933_0,#FF9933_33.33%,#FFFFFF_33.33%,#FFFFFF_66.66%,#138808_66.66%,#138808_100%)]" />
 
       <div className="border-b border-white/10 bg-[#1d256f] text-white shadow-[inset_0_-1px_0_rgba(255,255,255,0.12)]">
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-end px-4 sm:px-6 lg:px-8">
           <div className="flex items-center divide-x divide-white/35">
-            <UtilityButton label="Accessibility options" onClick={() => setAccessibilityOpen((curr) => !curr)} active={accessibilityOpen}>
+            <UtilityButton label={t.accessibilityOptions} onClick={() => setAccessibilityOpen((curr) => !curr)} active={accessibilityOpen}>
               <Accessibility className="h-5 w-5 stroke-[1.75]" />
             </UtilityButton>
 
-            <UtilityButton label="Toggle script" onClick={toggleLanguage}>
+            <UtilityButton label={t.switchLanguage} onClick={toggleLanguage}>
               <ScriptGlyph />
             </UtilityButton>
           </div>
@@ -168,7 +157,7 @@ export function PublicNavbar() {
                 <button
                   type="button"
                   onClick={() => setAccessibilityOpen(false)}
-                  aria-label="Close accessibility menu"
+                  aria-label={t.close}
                   className="rounded-md p-1 text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
                 >
                   ×
@@ -217,29 +206,6 @@ export function PublicNavbar() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  aria-pressed={highContrast}
-                  onClick={() => setHighContrast((current) => !current)}
-                  className="flex w-full items-center justify-between rounded-md border border-white/20 bg-white/5 px-3 py-2 text-left text-sm text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-                >
-                  <span>{t.highContrast}</span>
-                  <span className={cn("inline-flex h-5 w-9 rounded-full p-0.5 transition", highContrast ? "bg-[#FF9933]" : "bg-slate-600") }>
-                    <span className={cn("h-full w-1/2 rounded-full bg-white transition-transform", highContrast ? "translate-x-full" : "translate-x-0")} />
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  aria-pressed={reduceMotion}
-                  onClick={() => setReduceMotion((current) => !current)}
-                  className="flex w-full items-center justify-between rounded-md border border-white/20 bg-white/5 px-3 py-2 text-left text-sm text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-                >
-                  <span>{t.reduceMotion}</span>
-                  <span className={cn("inline-flex h-5 w-9 rounded-full p-0.5 transition", reduceMotion ? "bg-[#138808]" : "bg-slate-600") }>
-                    <span className={cn("h-full w-1/2 rounded-full bg-white transition-transform", reduceMotion ? "translate-x-full" : "translate-x-0")} />
-                  </span>
-                </button>
               </div>
             </div>
           )}
@@ -248,13 +214,7 @@ export function PublicNavbar() {
 
       <div className="border-b border-transparent bg-transparent">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-          {view !== "home" && (
-            <BackButton
-              alwaysFallback={[
-                "login", "register", "forgot-password", "reset-password", "verify-email",
-              ].includes(view)}
-            />
-          )}
+          {view !== "home" && <BackButton />}
           {view === "home" && (
             <div className={cn(
               "flex min-w-0 items-center gap-3 overflow-hidden transition-all duration-500 ease-out",
@@ -272,12 +232,20 @@ export function PublicNavbar() {
               "flex items-center gap-2 rounded-xl px-1.5 py-1 transition-all duration-300 sm:gap-3 sm:px-2",
               scrolledPastHero ? "bg-[#1d256f]/85 shadow-lg backdrop-blur-md" : "bg-transparent"
             )}>
-            <Button variant="secondary" className="hidden sm:inline-flex border border-white/20 bg-transparent text-white hover:border-white/40 hover:bg-white/5" onClick={() => navigate("login")}>
-              {t.login}
-            </Button>
-            <Button className="hidden sm:inline-flex border border-white/20 bg-transparent text-white hover:border-white/40 hover:bg-white/5" onClick={() => navigate("register")}>
-              {t.register}
-            </Button>
+            {user ? (
+              <Button className="hidden sm:inline-flex border border-white/20 bg-transparent text-white hover:border-white/40 hover:bg-white/5" onClick={() => navigate(isAdmin ? "admin-personnel" : "dashboard")}>
+                {translate(isAdmin ? "Admin Console" : "Dashboard", language)}
+              </Button>
+            ) : (
+              <>
+                <Button variant="secondary" className="hidden sm:inline-flex border border-white/20 bg-transparent text-white hover:border-white/40 hover:bg-white/5" onClick={() => navigate("login")}>
+                  {t.login}
+                </Button>
+                <Button className="hidden sm:inline-flex border border-white/20 bg-transparent text-white hover:border-white/40 hover:bg-white/5" onClick={() => navigate("register")}>
+                  {t.register}
+                </Button>
+              </>
+            )}
 
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
@@ -339,8 +307,16 @@ export function PublicNavbar() {
                   ))}
 
                   <div className="mt-4 flex flex-col gap-2 sm:hidden">
-                    <Button variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white" onClick={() => { navigate("login"); setOpen(false); }}>{t.login}</Button>
-                    <Button className="border-white/30 bg-white/10 text-white hover:bg-white/20" onClick={() => { navigate("register"); setOpen(false); }}>{t.register}</Button>
+                    {user ? (
+                      <Button variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white" onClick={() => { navigate(isAdmin ? "admin-personnel" : "dashboard"); setOpen(false); }}>
+                        {translate(isAdmin ? "Admin Console" : "Dashboard", language)}
+                      </Button>
+                    ) : (
+                      <>
+                        <Button variant="outline" className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white" onClick={() => { navigate("login"); setOpen(false); }}>{t.login}</Button>
+                        <Button className="border-white/30 bg-white/10 text-white hover:bg-white/20" onClick={() => { navigate("register"); setOpen(false); }}>{t.register}</Button>
+                      </>
+                    )}
                   </div>
 
                   <div className="my-3 h-px bg-white/20" />

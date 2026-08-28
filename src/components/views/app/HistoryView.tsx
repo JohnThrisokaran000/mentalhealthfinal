@@ -89,10 +89,13 @@ export default function HistoryView() {
   }, []);
 
   useEffect(() => {
-    loadJournals();
-    loadVoice();
-    loadSessions();
-    loadConvs();
+    const id = window.setTimeout(() => {
+      void loadJournals();
+      void loadVoice();
+      void loadSessions();
+      void loadConvs();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [loadJournals, loadVoice, loadSessions, loadConvs]);
 
   return (

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, BookHeart, Mic, MessageCircleHeart, History,
   BookOpen, LifeBuoy, UserRound, LogOut, Menu, ShieldCheck,
-  Sun, Moon, ChevronRight, AlertTriangle,
+  ChevronRight, AlertTriangle,
   Languages,
 } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
@@ -19,6 +19,7 @@ import type { View } from "@/lib/store";
 import { LevelDot } from "@/components/shared/level-pill";
 import { FloatingAIChat } from "@/components/shared/floating-ai-chat";
 import { BackButton } from "@/components/shared/back-button";
+import { translate } from "@/lib/i18n";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, BookHeart, Mic, MessageCircleHeart, History,
@@ -36,7 +37,7 @@ function useNavItems() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { user, view, navigate, theme, toggleTheme, mobileNavOpen, setMobileNavOpen, language, setLanguage } = useApp();
+  const { user, view, navigate, mobileNavOpen, setMobileNavOpen, language, setLanguage } = useApp();
   const navItems = useNavItems();
   const [emergencyOpen, setEmergencyOpen] = useState(false);
 
@@ -59,7 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {item.label}
+              {translate(item.label, language)}
             </button>
           );
         })}
@@ -76,7 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-foreground">{user.name ?? user.email}</p>
-              <p className="truncate text-xs text-muted-foreground">{ROLE_LABELS[user.role]}</p>
+              <p className="truncate text-xs text-muted-foreground">{translate(ROLE_LABELS[user.role], language)}</p>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </button>
@@ -102,7 +103,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Top bar */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6">
           <div className="flex items-center gap-3">
-            <BackButton fallback="dashboard" />
+            <BackButton />
             <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
@@ -116,14 +117,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="lg:hidden"><Logo /></div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === "en" ? "hi" : "en")} aria-label="Toggle script">
+            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === "en" ? "hi" : "en")} aria-label={translate(language === "en" ? "Switch to Hindi" : "Switch to English", language)}>
               <Languages className="mr-1.5 h-4 w-4" /> {language === "en" ? "हिंदी" : "English"}
             </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("support")} className="text-destructive">
-              <AlertTriangle className="mr-1.5 h-4 w-4" /> Need help?
-            </Button>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              <AlertTriangle className="mr-1.5 h-4 w-4" /> {translate("Need help?", language)}
             </Button>
           </div>
         </header>

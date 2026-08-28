@@ -38,10 +38,10 @@ const LEVELS: WellbeingLevel[] = ["NORMAL", "LOW", "MODERATE", "ELEVATED", "HIGH
 const PAGE_SIZE = 12;
 
 const STATUS_STYLE: Record<string, string> = {
-  ACTIVE: "bg-emerald-100 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30",
-  LOCKED: "bg-rose-100 text-rose-700 ring-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:ring-rose-400/30",
-  SUSPENDED: "bg-amber-100 text-amber-800 ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30",
-  PENDING_VERIFICATION: "bg-sky-100 text-sky-700 ring-sky-200 dark:bg-sky-500/15 dark:text-sky-300 dark:ring-sky-400/30",
+  ACTIVE: "bg-[#dfe7df] text-[#35604e] ring-[#aeb9ba]",
+  LOCKED: "bg-[#eadfdd] text-[#7a3f3b] ring-[#c9aaa5]",
+  SUSPENDED: "bg-[#eee6d2] text-[#765b28] ring-[#d5c39a]",
+  PENDING_VERIFICATION: "bg-[#dfe5e8] text-[#3f5f70] ring-[#b4c2c8]",
 };
 
 export default function AdminPersonnelView() {
@@ -91,10 +91,10 @@ export default function AdminPersonnelView() {
     }
   }, [debouncedQ, unit, level, page]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { const id = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(id); }, [load]);
 
   // Reset to page 1 when filters change
-  useEffect(() => { setPage(1); }, [unit, level]);
+  useEffect(() => { const id = window.setTimeout(() => setPage(1), 0); return () => window.clearTimeout(id); }, [unit, level]);
 
   if (forbidden) {
     return (
@@ -110,7 +110,7 @@ export default function AdminPersonnelView() {
       <Header language={language} />
 
       {/* Filters */}
-      <Card className="mb-4">
+      <Card className="mb-4 rounded-none border-[#c9c1b3] bg-[#f7f3ea] shadow-none">
         <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -118,12 +118,12 @@ export default function AdminPersonnelView() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={translate("Search by name, service number, or email…", language)}
-              className="pl-9"
+              className="rounded-none border-[#c9c1b3] bg-[#fbf8f1] pl-9 shadow-none"
               aria-label={translate("Search personnel", language)}
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <FilterSelect
+              <FilterSelect
               value={unit} onChange={setUnit}
               placeholder={translate("All units", language)}
               items={(data?.units ?? []).map((u) => ({ value: u, label: u }))}
@@ -165,23 +165,23 @@ export default function AdminPersonnelView() {
       ) : (
         <>
           {/* Desktop table */}
-          <Card className="hidden md:block">
+          <Card className="hidden rounded-none border-[#c9c1b3] bg-[#f7f3ea] shadow-none md:block">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{translate("Personnel", language)}</TableHead>
-                    <TableHead>{translate("Unit", language)}</TableHead>
-                    <TableHead>{translate("Status", language)}</TableHead>
-                    <TableHead>{translate("Wellbeing Indicator", language)}</TableHead>
-                    <TableHead>{translate("Last Check-in", language)}</TableHead>
-                    <TableHead>{translate("Last Activity", language)}</TableHead>
-                    <TableHead className="text-right">{translate("Actions", language)}</TableHead>
+                    <TableHead className="font-serif text-foreground">{translate("Personnel", language)}</TableHead>
+                    <TableHead className="font-serif text-foreground">{translate("Unit", language)}</TableHead>
+                    <TableHead className="font-serif text-foreground">{translate("Status", language)}</TableHead>
+                    <TableHead className="font-serif text-foreground">{translate("Wellbeing Indicator", language)}</TableHead>
+                    <TableHead className="font-serif text-foreground">{translate("Last Check-in", language)}</TableHead>
+                    <TableHead className="font-serif text-foreground">{translate("Last Activity", language)}</TableHead>
+                    <TableHead className="font-serif text-foreground text-right">{translate("Actions", language)}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.rows.map((p) => (
-                    <TableRow key={p.id}>
+                    <TableRow key={p.id} className="border-[#d8d0c4] hover:bg-[#eee8dc]">
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
@@ -197,7 +197,7 @@ export default function AdminPersonnelView() {
                       </TableCell>
                       <TableCell className="text-sm">{p.unit ?? "Unassigned"}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className={`ring-1 ${STATUS_STYLE[p.status] ?? ""}`}>
+                        <Badge variant="outline" className={`rounded-sm px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.08em] ring-1 ${STATUS_STYLE[p.status] ?? ""}`}>
                           {p.status.replace(/_/g, " ").toLowerCase()}
                         </Badge>
                       </TableCell>
@@ -224,7 +224,7 @@ export default function AdminPersonnelView() {
           {/* Mobile cards */}
           <div className="grid grid-cols-1 gap-3 md:hidden">
             {data.rows.map((p) => (
-              <Card key={p.id}>
+              <Card key={p.id} className="rounded-none border-[#c9c1b3] bg-[#f7f3ea] shadow-none">
                 <CardContent className="py-4">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-3 min-w-0">
@@ -245,7 +245,7 @@ export default function AdminPersonnelView() {
                     <div className="text-right font-medium">{p.unit ?? "—"}</div>
                     <div className="text-muted-foreground">Status</div>
                     <div className="text-right">
-                      <Badge variant="outline" className={`ring-1 ${STATUS_STYLE[p.status] ?? ""}`}>
+                      <Badge variant="outline" className={`rounded-sm px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.08em] ring-1 ${STATUS_STYLE[p.status] ?? ""}`}>
                         {p.status.replace(/_/g, " ").toLowerCase()}
                       </Badge>
                     </div>
@@ -290,7 +290,7 @@ function FilterSelect({
 }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger aria-label={ariaLabel} className="w-[160px]">
+      <SelectTrigger aria-label={ariaLabel} className="w-[160px] rounded-none border-[#c9c1b3] bg-[#fbf8f1] shadow-none">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
@@ -367,7 +367,7 @@ function Header({ language }: { language: "en" | "hi" }) {
   return (
     <div className="mb-6 flex flex-col gap-1">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{translate("Directory", language)}</p>
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+      <h1 className="font-serif text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
         {translate("Personnel", language)}
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">

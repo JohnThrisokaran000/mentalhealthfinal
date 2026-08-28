@@ -47,6 +47,7 @@ export function PublicFooter() {
           <p className="italic">{isHindi ? "यदि आप तत्काल खतरे में हैं, तो अपनी स्थानीय आपातकालीन सेवाओं से संपर्क करें।" : "If you are in immediate danger, contact your local emergency services."}</p>
         </div>
       </div>
+      <div className="h-[6px] w-full bg-[linear-gradient(90deg,#FF9933_0,#FF9933_33.33%,#FFFFFF_33.33%,#FFFFFF_66.66%,#138808_66.66%,#138808_100%)]" aria-hidden="true" />
     </footer>
   );
 }

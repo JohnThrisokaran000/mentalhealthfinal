@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useApp } from "@/lib/store";
-import { translate, type Language } from "@/lib/i18n";
+import { translate, translationPair, type Language } from "@/lib/i18n";
 
 const originalText = new WeakMap<Text, string>();
 const originalAttributes = new WeakMap<Element, Map<string, string>>();
@@ -11,17 +11,33 @@ const ATTRIBUTES = ["aria-label", "placeholder", "title"];
 function applyTranslation(root: Node, language: Language) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   let node: Node | null;
+  const textNodes: Text[] = root.nodeType === Node.TEXT_NODE
+    ? [root as Text]
+    : [];
   while ((node = walker.nextNode())) {
-    const text = node as Text;
-    if (!originalText.has(text)) originalText.set(text, text.nodeValue ?? "");
-    const source = originalText.get(text) ?? "";
+    textNodes.push(node as Text);
+  }
+  for (const text of textNodes) {
+    const current = text.nodeValue ?? "";
+    const cached = originalText.get(text);
+    const cachedSource = cached === undefined ? "" : translationPair(cached).en;
+    const currentSource = translationPair(current).en;
+    const rawSource = cached === undefined || (current.trim() && currentSource !== cachedSource && current !== cached)
+      ? current
+      : cached;
+    if (rawSource !== cached) originalText.set(text, rawSource);
+    const source = translationPair(rawSource).en;
     const leading = source.match(/^\s*/)?.[0] ?? "";
     const trailing = source.match(/\s*$/)?.[0] ?? "";
     const core = source.slice(leading.length, source.length - trailing.length || undefined);
     text.nodeValue = `${leading}${translate(core, language)}${trailing}`;
   }
 
-  const elements = root instanceof Element ? [root, ...Array.from(root.querySelectorAll("*"))] : Array.from((root as Document).querySelectorAll("*"));
+  const elements: Element[] = root instanceof Element
+    ? [root, ...Array.from(root.querySelectorAll("*"))]
+    : root instanceof Document || root instanceof DocumentFragment
+      ? Array.from(root.querySelectorAll("*"))
+      : [];
   for (const element of elements) {
     for (const attribute of ATTRIBUTES) {
       const value = element.getAttribute(attribute);
@@ -29,7 +45,15 @@ function applyTranslation(root: Node, language: Language) {
       let originals = originalAttributes.get(element);
       if (!originals) { originals = new Map(); originalAttributes.set(element, originals); }
       if (!originals.has(attribute)) originals.set(attribute, value);
-      element.setAttribute(attribute, translate(originals.get(attribute) ?? value, language));
+      const cached = originals.get(attribute);
+      const cachedSource = cached === undefined ? "" : translationPair(cached).en;
+      const currentSource = translationPair(value).en;
+      const rawSource = cached === undefined || (value.trim() && currentSource !== cachedSource && value !== cached)
+        ? value
+        : cached;
+      if (rawSource !== cached) originals.set(attribute, rawSource);
+      const source = translationPair(rawSource).en;
+      element.setAttribute(attribute, translate(source, language));
     }
   }
 }

@@ -84,7 +84,7 @@ export default function AICompanionView() {
     }
   }, []);
 
-  useEffect(() => { loadConversations(); }, [loadConversations]);
+  useEffect(() => { const id = window.setTimeout(() => { void loadConversations(); }, 0); return () => window.clearTimeout(id); }, [loadConversations]);
 
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);

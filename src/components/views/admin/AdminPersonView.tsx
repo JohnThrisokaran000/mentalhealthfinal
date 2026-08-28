@@ -148,6 +148,7 @@ export default function AdminPersonView() {
 
   return (
     <AdminPage>
+      <div className="admin-record-page">
       <BackButton />
 
       {/* Header */}
@@ -540,6 +541,7 @@ export default function AdminPersonView() {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </AdminPage>
   );

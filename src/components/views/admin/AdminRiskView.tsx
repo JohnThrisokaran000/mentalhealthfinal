@@ -74,7 +74,7 @@ export default function AdminRiskView() {
     } finally { setLoading(false); }
   }, [days, unit, level]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { const id = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(id); }, [load]);
 
   if (forbidden) {
     return (
