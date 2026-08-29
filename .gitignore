@@ -57,3 +57,10 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# prisma
+prisma/db/*.db
+prisma/db/
+
+# pytest
+.pytest_cache/
