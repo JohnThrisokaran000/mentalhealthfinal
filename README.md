@@ -1,4 +1,4 @@
-#CRPF MHS 
+# CRPF MHS 
 An AI-Assisted Wellbeing Platform for Armed Forces Personnel
 
 A confidential, AI-assisted **wellbeing and early-support** platform for armed forces and uniformed-service personnel. Regular check-ins, daily journaling (text + voice), an AI-assisted companion, configurable risk monitoring, audited sensitive-access controls, and a secure admin console.
