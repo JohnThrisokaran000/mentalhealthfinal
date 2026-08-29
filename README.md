@@ -5,7 +5,7 @@ A confidential, AI-assisted **wellbeing and early-support** platform for armed f
 
 > This repository now also includes a standalone [`backend/`](backend/README.md) FastAPI service, Alembic migration, focused backend tests, and a full PostgreSQL/Redis Docker Compose stack. The existing Next.js application remains at repository root as the frontend/BFF implementation; its app routes preserve the current interface while the FastAPI service exposes the documented API contract for deployment integration.
 
-> **Important:** Sentinel is an *AI-assisted wellbeing and early-support system*. It does **not** diagnose mental illness and does **not** replace qualified mental-health professionals. Any potentially high-risk situation surfaces human-support options and creates an internal alert for authorized personnel.
+> **Important:** CRPF MHS is an *AI-assisted wellbeing and early-support system*. It does **not** diagnose mental illness and does **not** replace qualified mental-health professionals. Any potentially high-risk situation surfaces human-support options and creates an internal alert for authorized personnel.
 
 ---
 
@@ -32,7 +32,7 @@ A confidential, AI-assisted **wellbeing and early-support** platform for armed f
 
 ## Overview
 
-Sentinel helps personnel:
+CRPF MHS helps personnel:
 - perform regular wellbeing check-ins
 - complete an initial wellbeing assessment
 - maintain daily journals (text and voice)
@@ -195,16 +195,16 @@ The FastAPI backend defaults to mock AI/STT output. It provides a server-owned p
 
 ## Development Credentials
 
-All accounts use the password **`Sentinel@2025`**. These are **development-only** fictional accounts.
+All accounts use the password **`CRPF MHS@2025`**. These are **development-only** fictional accounts.
 
 | Email | Role | Notes |
 |---|---|---|
-| `admin@sentinel.dev` | ADMIN | Sees analytics, audit logs, manages alerts — but **cannot** view journals/conversations (no clinical permission) |
-| `pro@sentinel.dev` | MENTAL_HEALTH_PROFESSIONAL | Has `VIEW_JOURNAL` / `VIEW_AI_CONVERSATION` / `VIEW_ASSESSMENT` (clinical access) |
-| `supervisor@sentinel.dev` | SUPERVISOR | Limited operational view |
-| `user@sentinel.dev` | USER (Personnel) | Onboarding complete |
-| `sara@sentinel.dev` | USER (Personnel) | `firstLogin=true` → triggers assessment onboarding |
-| `daniel@sentinel.dev`, `tom@sentinel.dev`, `aisha@sentinel.dev` | USER | Sample personnel with seeded journals/alerts |
+| `admin@CRPF MHS.dev` | ADMIN | Sees analytics, audit logs, manages alerts — but **cannot** view journals/conversations (no clinical permission) |
+| `pro@CRPF MHS.dev` | MENTAL_HEALTH_PROFESSIONAL | Has `VIEW_JOURNAL` / `VIEW_AI_CONVERSATION` / `VIEW_ASSESSMENT` (clinical access) |
+| `supervisor@CRPF MHS.dev` | SUPERVISOR | Limited operational view |
+| `user@CRPF MHS.dev` | USER (Personnel) | Onboarding complete |
+| `sara@CRPF MHS.dev` | USER (Personnel) | `firstLogin=true` → triggers assessment onboarding |
+| `daniel@CRPF MHS.dev`, `tom@CRPF MHS.dev`, `aisha@CRPF MHS.dev` | USER | Sample personnel with seeded journals/alerts |
 
 ## Environment Variables
 
@@ -291,7 +291,7 @@ See [`docs/SECURITY.md`](docs/SECURITY.md).
 # USER should get 403 on every admin endpoint
 curl -s -c /tmp/u.txt -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@sentinel.dev","password":"Sentinel@2025"}'
+  -d '{"email":"user@CRPF MHS.dev","password":"CRPF MHS@2025"}'
 for ep in dashboard personnel risk alerts audit-logs analytics; do
   echo -n "$ep: "; curl -s -b /tmp/u.txt -o /dev/null -w "%{http_code}\n" http://localhost:3000/api/admin/$ep
 done   # → all 403
@@ -333,4 +333,4 @@ See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). Highlights:
 
 ---
 
-**If you are in immediate danger, contact your local emergency services.** Sentinel is a support tool, not a crisis line.
+**If you are in immediate danger, contact your local emergency services.** CRPF MHS is a support tool, not a crisis line.
